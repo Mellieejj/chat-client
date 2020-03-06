@@ -7,7 +7,7 @@ class App extends Component {
     text: ""
   };
 
-  stream = new EventSource("http://localhost:4000/stream");
+  stream = new EventSource("https://shielded-bayou-56100.herokuapp.com/stream");
 
   componentDidMount() {
     this.stream.onmessage = event => {
@@ -24,7 +24,7 @@ class App extends Component {
     event.preventDefault();
     try {
       const response = await superagent
-        .post("http://localhost:4000/message")
+        .post("https://shielded-bayou-56100.herokuapp.com/message")
         .send({ text: this.state.text });
       this.reset();
       console.log(response);
