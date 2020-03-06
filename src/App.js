@@ -6,6 +6,13 @@ class App extends Component {
     text: ""
   };
 
+  stream = new EventSource("http://localhost:4000/stream");
+
+  componentDidMount() {
+    this.stream.onmessage = function(event) {
+      console.log("Data Event", event.data);
+    };
+  }
   onSubmit = async event => {
     event.preventDefault();
     try {
