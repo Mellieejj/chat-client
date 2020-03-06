@@ -2,12 +2,16 @@ import React, { Component } from "react";
 import superagent from "superagent";
 import { connect } from "react-redux";
 
+// const baseUrl = "https://shielded-bayou-56100.herokuapp.com";
+
+const baseUrl = "http://localhost:4000";
+
 class App extends Component {
   state = {
     text: ""
   };
 
-  stream = new EventSource("https://shielded-bayou-56100.herokuapp.com/stream");
+  stream = new EventSource(`${baseUrl}/stream`);
 
   componentDidMount() {
     this.stream.onmessage = event => {
@@ -24,7 +28,7 @@ class App extends Component {
     event.preventDefault();
     try {
       const response = await superagent
-        .post("https://shielded-bayou-56100.herokuapp.com/message")
+        .post(`${baseUrl}/message`)
         .send({ text: this.state.text });
       this.reset();
       console.log(response);
@@ -45,6 +49,7 @@ class App extends Component {
 
   render() {
     const messages = this.props.messages.map(message => <p>{message}</p>);
+    const channels = this.props.channels.map(channel => <p>{channel}</p>);
     return (
       <main>
         <form onSubmit={this.onSubmit}>
@@ -52,6 +57,10 @@ class App extends Component {
           <button>Send</button>
           <button onClick={this.reset}>Reset</button>
         </form>
+        <h2>Channels</h2>
+
+        {channels}
+        <h2>Messages</h2>
         {messages}
       </main>
     );
@@ -60,7 +69,8 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    messages: state.messages
+    messages: state.messages,
+    channels: state.channels
   };
 }
 
