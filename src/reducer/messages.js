@@ -1,5 +1,10 @@
 function reducer(state = [], action) {
-  switch (action.payload) {
+  console.log(action);
+  switch (action.type) {
+    case "ALL_MESSAGES":
+      console.log("payload test:", action.payload);
+      return action.payload;
+
     default:
       return state;
   }

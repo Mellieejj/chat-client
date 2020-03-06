@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import superagent from "superagent";
+import { connect } from "react-redux";
 
 class App extends Component {
   state = {
@@ -9,17 +10,23 @@ class App extends Component {
   stream = new EventSource("http://localhost:4000/stream");
 
   componentDidMount() {
-    this.stream.onmessage = function(event) {
+    this.stream.onmessage = event => {
+      //event. data is a JSON string
+      // we need a real JavaScript object to use the data
+      //to convert, use JSON.parse
       console.log("Data Event", event.data);
+      const parsed = JSON.parse(event.data);
+      this.props.dispatch(parsed);
     };
   }
+
   onSubmit = async event => {
     event.preventDefault();
     try {
       const response = await superagent
         .post("http://localhost:4000/message")
         .send({ text: this.state.text });
-
+      this.reset();
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -35,6 +42,7 @@ class App extends Component {
   reset = () => {
     this.setState({ text: "" });
   };
+
   render() {
     return (
       <main>
@@ -48,4 +56,7 @@ class App extends Component {
   }
 }
 
-export default App;
+const connector = connect();
+const connected = connector(App);
+
+export default connected;
